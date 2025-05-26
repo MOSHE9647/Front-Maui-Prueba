@@ -1,1 +1,65 @@
+.gitignore
+# Archivos y carpetas de compilación
+bin/
+obj/
+
+# Archivos de usuario de Visual Studio
 .vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de configuración de Rider y VS Code
+.idea/
+.vscode/
+*.code-workspace
+
+# Archivos de paquetes NuGet
+*.nupkg
+*.snupkg
+packages/
+# Paquetes NuGet descargados
+**/packages/*
+
+# Archivos de log y temporales
+*.log
+*.tmp
+
+# Archivos de configuración de MAUI
+appsettings.*.json
+
+# Archivos de plataforma específicos generados
+MauiAppMovil/Platforms/Android/obj/
+MauiAppMovil/Platforms/Android/bin/
+MauiAppMovil/Platforms/iOS/obj/
+MauiAppMovil/Platforms/iOS/bin/
+MauiAppMovil/Platforms/MacCatalyst/obj/
+MauiAppMovil/Platforms/MacCatalyst/bin/
+MauiAppMovil/Platforms/Windows/obj/
+MauiAppMovil/Platforms/Windows/bin/
+
+# Archivos de publicación
+publish/
+*.publishsettings
+
+# Archivos de test y cobertura
+TestResults/
+*.coverage
+*.coveragexml
+
+# Archivos de configuración de usuario
+*.userprefs
+
+# Archivos de backup
+*.bak
+
+# Archivos de base de datos locales
+*.db
+*.sqlite
+
+# Archivos de configuración de herramientas
+*.DotSettings.user
+
+# Archivos de configuración de depuración
+launchSettings.json
