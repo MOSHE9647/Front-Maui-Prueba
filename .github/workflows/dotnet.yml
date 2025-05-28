@@ -9,7 +9,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -25,6 +25,9 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      - name: Instalar workload MAUI
+        run: dotnet workload install maui
+
       - name: Restaurar y compilar backend
         working-directory: ./backend
         run: |
@@ -34,14 +37,19 @@ jobs:
       - name: Ejecutar backend en background
         working-directory: ./backend
         run: |
-          nohup dotnet run --no-build --urls "http://localhost:5275" &
+          nohup dotnet run --no-build --urls "http://localhost:5275" --project api/api.csproj &
           sleep 10
 
       - name: Restaurar dependencias frontend
-        run: dotnet restore
+        working-directory: ./MauiAppMovil
+        run: |
+          dotnet workload restore
+          dotnet restore
 
       - name: Compilar frontend
+        working-directory: ./MauiAppMovil
         run: dotnet build --no-restore
 
       - name: Ejecutar tests frontend
+        working-directory: ./MauiAppMovil
         run: dotnet test --no-build --verbosity normal
