@@ -11,35 +11,8 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: "Examen1234"
-          ACCEPT_EULA: "Y"
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd "exit 0"
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Esperar a que SQL Server esté listo
-        run: |
-          for i in {1..30}; do
-            if /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Examen1234" -Q "SELECT 1" &> /dev/null; then
-              echo "SQL Server está listo"
-              break
-            else
-              echo "Esperando SQL Server..."
-              sleep 5
-            fi
-          done
-
-      - name: Crear base de datos Examen
-        run: |
-          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "Examen1234" -Q "CREATE DATABASE Examen"
 
       - name: Clonar backend
         uses: actions/checkout@v4
