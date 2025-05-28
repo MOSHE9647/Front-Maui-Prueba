@@ -9,5 +9,47 @@
         <vm:CourseViewModel />
     </ContentPage.BindingContext>
 
+    <Grid RowDefinitions="*,Auto" Padding="20" RowSpacing="15">
 
+        <!-- Lista de cursos -->
+        <CollectionView Grid.Row="0" ItemsSource="{Binding Courses}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame BorderColor="Gray" Margin="5">
+                        <StackLayout>
+                            <Label Text="{Binding Name}" FontAttributes="Bold"/>
+                            <Label Text="{Binding Description}" FontSize="Small"/>
+                            <Label Text="{Binding Schedule}" FontSize="Small" TextColor="Gray"/>
+                            <Label Text="{Binding Professor}" FontSize="Small" TextColor="Gray"/>
+                            <Image Source="{Binding FullImageUrl}" HeightRequest="100" Aspect="AspectFit"/>
+
+                            <!-- Botones de acción -->
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="End" Spacing="10">
+                                <Button Text="Editar"
+                                        Clicked="OnEditClicked"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Orange"
+                                        TextColor="White" />
+
+                                <Button Text="Eliminar"
+                                        Clicked="OnDeleteClicked"
+                                        CommandParameter="{Binding Id}"
+                                        BackgroundColor="Red"
+                                        TextColor="White" />
+                            </StackLayout>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Botón para agregar nuevo curso (abajo) -->
+        <Button Grid.Row="1"
+                Text="Agregar Curso"
+                Clicked="OnAddCourseClicked"
+                BackgroundColor="DarkGreen"
+                TextColor="White"
+                Margin="0,10,0,10" />
+
+    </Grid>
 </ContentPage>

@@ -1,57 +1,77 @@
-﻿using System.Net.Http.Headers;
+﻿using MauiAppMovil.Models;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using MauiAppMovil.Models;
 
 namespace MauiAppMovil.Services
 {
-   public class CourseService
- {
-     private readonly HttpClient _httpClient;
-     private readonly string baseUrl = $"{AppConstants.ApiBaseUrl}/course";
+    public class CourseService
+    {
+        private readonly HttpClient _httpClient;
+        private readonly string baseUrl = $"{AppConstants.ApiBaseUrl}/course";
 
-     public CourseService()
-     {
-         _httpClient = new HttpClient();
-     }
+        public CourseService()
+        {
+            _httpClient = new HttpClient();
+        }
 
-     // Obtener todos los cursos
-     public async Task<List<Course>> GetCoursesAsync()
-     {
-         var response = await _httpClient.GetAsync(baseUrl);
-         response.EnsureSuccessStatusCode();
-         return await response.Content.ReadFromJsonAsync<List<Course>>() ?? new();
-     }
+        // Obtener todos los cursos
+        public async Task<List<Course>> GetCoursesAsync()
+        {
+            var response = await _httpClient.GetAsync(baseUrl);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<List<Course>>() ?? new();
+        }
 
-     // Crear curso con imagen (multipart/form-data)
-     public async Task<bool> CreateCourseAsync(Course course, Stream imageStream, string imageName)
-     {
-         var content = new MultipartFormDataContent();
+        // Crear curso con imagen (multipart/form-data)
+        public async Task<HttpResponseMessage> CreateCourseWithResponseAsync(Course course, Stream imageStream, string imageName)
+        {
+            var content = new MultipartFormDataContent();
 
-         content.Add(new StringContent(course.Name), "Name");
-         content.Add(new StringContent(course.Description), "Description");
-         content.Add(new StringContent(course.Schedule), "Schedule");
-         content.Add(new StringContent(course.Professor), "Professor");
+            content.Add(new StringContent(course.Name), "Name");
+            content.Add(new StringContent(course.Description), "Description");
+            content.Add(new StringContent(course.Schedule), "Schedule");
+            content.Add(new StringContent(course.Professor), "Professor");
 
-         var fileContent = new StreamContent(imageStream);
-         fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/png"); // Cambiar si usas .jpg u otros
-         content.Add(fileContent, "File", imageName);
+            if (imageStream == null || string.IsNullOrEmpty(imageName))
+            {
+                return new HttpResponseMessage(System.Net.HttpStatusCode.BadRequest)
+                {
+                    Content = new StringContent("Image stream or image name cannot be null or empty.")
+                };
+            }
 
-         var response = await _httpClient.PostAsync(baseUrl, content);
-         return response.IsSuccessStatusCode;
-     }
+            var fileContent = new StreamContent(imageStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            content.Add(fileContent, "File", imageName);
 
-     // Actualizar curso (sin imagen)
-     public async Task<bool> UpdateCourseAsync(Course course)
-     {
-         var response = await _httpClient.PutAsJsonAsync($"{baseUrl}/{course.Id}", course);
-         return response.IsSuccessStatusCode;
-     }
+            return await _httpClient.PostAsync(baseUrl, content);
+        }
 
-     // Eliminar curso
-     public async Task<bool> DeleteCourseAsync(int id)
-     {
-         var response = await _httpClient.DeleteAsync($"{baseUrl}/{id}");
-         return response.IsSuccessStatusCode;
-     }
- }
+        // Actualizar curso con imagen (multipart/form-data)
+        public async Task<HttpResponseMessage> UpdateCourseWithImageAsync(Course course, Stream? imageStream = null, string? imageName = null)
+        {
+            var content = new MultipartFormDataContent();
+
+            content.Add(new StringContent(course.Name), "Name");
+            content.Add(new StringContent(course.Description), "Description");
+            content.Add(new StringContent(course.Schedule), "Schedule");
+            content.Add(new StringContent(course.Professor), "Professor");
+
+            if (imageStream != null && imageName != null)
+            {
+                var fileContent = new StreamContent(imageStream);
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+                content.Add(fileContent, "File", imageName);
+            }
+
+            return await _httpClient.PutAsync($"{baseUrl}/{course.Id}", content);
+        }
+
+
+        // Eliminar curso
+        public async Task<HttpResponseMessage> DeleteCourseAsync(int id)
+        {
+            return await _httpClient.DeleteAsync($"{baseUrl}/{id}");
+        }
+    }
 }

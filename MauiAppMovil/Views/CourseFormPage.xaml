@@ -4,7 +4,15 @@
              Title="Nuevo Curso">
 
     <ScrollView>
-      
+        <VerticalStackLayout Padding="20" Spacing="10">
+            <Entry x:Name="nameEntry" Placeholder="Nombre del curso" />
+            <Entry x:Name="descEntry" Placeholder="Descripción" />
+            <Entry x:Name="schedEntry" Placeholder="Horario" />
+            <Entry x:Name="profEntry" Placeholder="Profesor" />
+            <Image x:Name="previewImage" HeightRequest="100" Aspect="AspectFit"/>
+            <Button Text="Seleccionar imagen" Clicked="OnPickImage" />
+            <Button Text="Guardar" Clicked="OnSaveCourse" BackgroundColor="DarkBlue" TextColor="White"/>
+        </VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>
